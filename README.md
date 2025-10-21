@@ -6,7 +6,7 @@ using synthetic pre-ANM and post-ANM models.
 - `test.py`: Runs simulation (72 × 10 cases)
 - `plot_results.py`: Boxplots of mean MSEs per (model, dims)
 - `plot_loss_distributions.py`: Overall MSE distribution comparisons (4 losses)
-- `outlier.py`: Summarizes high-MSE (>1) cases
+- `outlier.ipynb`: Summarizes high-MSE (>1) cases
 
 ## Outputs
 Results and figures are stored in the `result/` folder.
