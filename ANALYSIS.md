@@ -1,4 +1,4 @@
-# Analysis of Simulation Results — Option B
+# Analysis of Simulation Results
 
 This section presents and interprets the results of the simulation study comparing Engression loss functions, following the ADEMP design.
 
