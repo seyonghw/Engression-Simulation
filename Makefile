@@ -14,11 +14,12 @@ CSV := $(RESULT_DIR)/mse_engression_losses.csv
 SIM_SCRIPT := test.py
 BOXPLOT_SCRIPT := plot_results.py
 DIST_SCRIPT := plot_loss_distributions.py
+PROFILE_SCRIPT := complexity_profile.py
 
 # ---------------------------------------------------------
 # Top-level targets
 # ---------------------------------------------------------
-.PHONY: all simulate figures distributions boxplots analysis clean help
+.PHONY: all simulate figures distributions boxplots analysis clean help profile
 
 all: simulate analysis
 
@@ -52,6 +53,14 @@ $(FIG_DIR)/.ok_distributions: $(CSV) $(DIST_SCRIPT)
 	$(PYTHON) $(DIST_SCRIPT)
 	@touch $@
 
+# 4) Profiling / complexity runs over (REPS, N_TRAIN) grid
+profile:
+	@mkdir -p $(RESULT_DIR)
+	$(PYTHON) $(PROFILE_SCRIPT)
+	@echo "[INFO] Profiling / complexity results should be in $(RESULT_DIR)/complexity_grid.csv"
+
+
+
 
 # ---------------------------------------------------------
 # Utilities
@@ -71,5 +80,6 @@ help:
 	@echo "  make distributions# build violin/density/ECDF comparisons"
 	@echo "  make figures      # boxplots + distributions"
 	@echo "  make analysis     # figures"
+	@echo "  make profile       # run profiling / complexity grid (profile.py)"
 	@echo "  make all          # simulate + analysis"
 	@echo "  make clean        # remove figures and summaries (keep CSV)"

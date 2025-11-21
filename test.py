@@ -23,14 +23,16 @@ from engression_local import engression  # training + prediction
 # Config
 # -----------------------
 
-MODELS = ["preANM", "postANM"]
-DIMS = [(1, 1, 1), (2, 2, 1), (2, 2, 2)]
-TRUE_FUNS = ["cubic", "square", "log"]
-NOISE_DISTS = ["gaussian", "uniform"]
-NOISE_STDS = [1.0, 2.0]
+MODELS = ["preANM"]
+DIMS = [(2, 2, 2)]
+TRUE_FUNS = ["cubic", "square"]
+NOISE_DISTS = ["uniform"]
+NOISE_STDS = [1.0, 2.0, 3.0]
 
-N_TRAIN = 10_000
-REPS = 10  # A, M draws per case
+#N_TRAIN = 10_000
+#REPS = 10  # A, M draws per case
+DEFAULT_N_TRAIN = 10_000
+DEFAULT_REPS = 10
 
 # Prediction config (keep consistent across losses)
 PRED_TARGET = "median"
@@ -93,7 +95,7 @@ def set_seed_all(seed: int):
 # -----------------------
 # Single-case runner
 # -----------------------
-def run_case(model_type, dx, dy, k, true_function, noise_dist, noise_std, device):
+def run_case(model_type, dx, dy, k, true_function, noise_dist, noise_std, device, REPS=10, N_TRAIN=10000):
     """
     Run one parameter case with REPS replications.
     Returns: list of dict rows (one per loss per replication).
@@ -190,6 +192,8 @@ def main():
             true_function=true_function,
             noise_dist=noise_dist, noise_std=noise_std,
             device=device,
+            REPS=DEFAULT_REPS,
+            N_TRAIN=DEFAULT_N_TRAIN,
         )
         all_rows.extend(rows)
 
