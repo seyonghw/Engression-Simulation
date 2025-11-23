@@ -14,9 +14,9 @@ For each parameter configuration, it loops through:
 Each replication is **independent**, yet executed **sequentially**.  
 Since training dominates runtime (~85–90%), wall-clock time grows roughly linearly in
 
-\[
+$$
 \text{REPS} \times \text{training cost}.
-\]
+$$
 
 This serial execution is the main bottleneck.
 
@@ -97,41 +97,16 @@ The table below compares **baseline** and **parallel** runtimes (in seconds), al
 ## 5. Trade-offs
 
 ### Advantages
+- The optimized version runs **much faster** (about 1.5×–1.7× speedup for realistic cases).
+- Replications are **independent**, so parallelization does **not** change the results.
+- Users can easily control the number of CPU workers.
 
-- **Faster experiments:**  
-  For moderate-to-large simulations, the optimized implementation reduces wall-clock time by roughly **40–70%** compared to the baseline.
+### Limitations
+- For very small jobs (e.g., `REPS = 1`), parallel overhead can make it **no faster**.
+- Parallelization works only on **CPU** (GPU runs stay serial).
+- Multiple processes use **more memory** than a single process.
 
-- **Embarrassingly parallel structure:**  
-  Each replication is independent, so parallelizing over `REPS` does **not** change the statistical procedure or model.
+### When to use
+- Use the optimized version for **large simulation runs** (REPS ≥ 3, N_TRAIN ≥ 5000).
+- Use the baseline version for **small tests**, debugging, or GPU runs.
 
-- **Same outputs as baseline:**  
-  Per-replication seeding (`set_seed_all(rep)`) ensures that, for fixed `REPS` and `N_TRAIN`, the optimized version produces the **same results** as the serial baseline (up to minor floating-point variation).
-
-- **Configurable parallelism:**  
-  Users can choose whether to enable parallelization and how many workers to use (`use_parallel`, `n_jobs`), allowing a balance between speed and resource usage.
-
-### Limitations / Caveats
-
-- **Overhead for small jobs:**  
-  When `REPS` is very small (especially `REPS = 1`) and `N_TRAIN` is small, the process creation overhead can cancel out the benefit, or even make the parallel version slightly slower.
-
-- **CPU-only parallelism:**  
-  For safety and simplicity, if the device is GPU (`device.type == "cuda"`), the code falls back to serial execution. Sharing a single GPU across multiple processes is often unstable or slower.
-
-- **Higher memory usage:**  
-  Each worker process has its own copy of data and model parameters, which increases total memory consumption compared to the serial baseline.
-
-- **Need to tune `n_jobs`:**  
-  Using too many workers (more than the number of available CPU cores) can lead to context-switch overhead and contention, reducing or even reversing the performance gains.
-
-### Recommended Usage
-
-- **Use the optimized parallel version** when:
-  - `REPS ≥ 3` and `N_TRAIN ≥ 5000`,
-  - running on CPU,
-  - performing large simulation sweeps where runtime matters.
-
-- **Stick to the serial baseline** when:
-  - debugging or running quick tests,
-  - `REPS` is very small,
-  - running on GPU (where the code already falls back to serial).
