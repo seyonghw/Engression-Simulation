@@ -104,3 +104,35 @@ The training loop processes the data in minibatches (`batch_size=1000`), so the 
 
 > Runtime grows **approximately linearly** in N_TRAIN.
 
+
+## 3. Bottleneck Analysis
+
+To see which part of the pipeline is slowest, we timed four main steps inside `run_case()`:
+
+1. `generate_mats` (matrix generation)
+2. data generation (`preanm_generator`)
+3. `true_surface_on_grid` (truth on a grid)
+4. `engression` training
+5. `model.predict` (prediction on a grid with MC samples)
+
+Using **REPS = 10**, **N_TRAIN = 10,000**, and 5 losses per replication, we obtained the following **average times per model**:
+
+| Step                  | Avg time (sec) | Comment       |
+|----------------------|----------------|---------------|
+| Matrix generation    | ~0.006         | negligible    |
+| Data generation      | ~0.007         | negligible    |
+| True surface         | ~0.0003        | negligible    |
+| **Training**         | **~13.2**      | **dominant**  |
+| Prediction           | ~2.4           | secondary     |
+
+### Main takeaway
+
+> **Training is the clear bottleneck.**  
+> Almost all runtime comes from the `engression` training loop; matrix generation, data simulation, and true-surface computation are essentially free in comparison. Prediction is the second-largest cost but still much smaller than training.
+
+In practice, any attempt to speed up the baseline should focus on:
+
+- reducing the number of epochs,
+- reducing the number of replications,
+- or simplifying / shrinking the network used in `engression`.
+
