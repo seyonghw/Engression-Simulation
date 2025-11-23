@@ -15,6 +15,8 @@ SIM_SCRIPT := test.py
 BOXPLOT_SCRIPT := plot_results.py
 DIST_SCRIPT := plot_loss_distributions.py
 PROFILE_SCRIPT := complexity_profile.py
+PROFILE_OPT_SCRIPT := complexity_profile_optimized.py
+BOTTLENECK_SCRIPT := bottleneck.py
 
 # ---------------------------------------------------------
 # Top-level targets
@@ -59,6 +61,17 @@ profile:
 	$(PYTHON) $(PROFILE_SCRIPT)
 	@echo "[INFO] Profiling / complexity results should be in $(RESULT_DIR)/complexity_grid.csv"
 
+# 5) Profiling / complexity runs — optimized parallel version
+profile_opt:
+	@mkdir -p $(RESULT_DIR)
+	$(PYTHON) $(PROFILE_OPT_SCRIPT)
+	@echo "[INFO] Optimized profiling results should be in $(RESULT_DIR)/complexity_grid_optimized.csv"
+
+# 6) Bottleneck timing for internal steps (generate_mats, data gen, training, prediction)
+bottleneck:
+	@mkdir -p $(RESULT_DIR)
+	$(PYTHON) $(BOTTLENECK_SCRIPT)
+	@echo "[INFO] Bottleneck timings should be in $(RESULT_DIR)/bottleneck_times.csv"
 
 
 
@@ -81,5 +94,7 @@ help:
 	@echo "  make figures      # boxplots + distributions"
 	@echo "  make analysis     # figures"
 	@echo "  make profile       # run profiling / complexity grid (profile.py)"
+	@echo "  make profile_opt     # run optimized profiling (complexity_profile_optimized.py)"
+	@echo "  make bottleneck      # run bottleneck timing (bottleneck.py)"
 	@echo "  make all          # simulate + analysis"
 	@echo "  make clean        # remove figures and summaries (keep CSV)"
