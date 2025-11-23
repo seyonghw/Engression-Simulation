@@ -1,13 +1,3 @@
-Here is the **BASELINE.md** you requested, following **exactly the structure you specified**, and **using the computed results** from your uploaded `complexity_grid.csv`.
-
-You can copy this into:
-
-```
-docs/BASELINE.md
-```
-
----
-
 # **BASELINE.md**
 
 ## 1. Runtime Profiling
@@ -71,9 +61,9 @@ Example for N_TRAIN = 2000:
 
 Doubling REPS approximately doubles runtime:
 
-[
+\[
 \text{time} \propto \text{REPS}^{,1.0}.
-]
+\]
 
 **Conclusion:**
 
@@ -103,9 +93,9 @@ Example for REPS = 10:
 
 The growth is consistent with:
 
-[
+\[
 \text{time} \approx c \cdot N_{\text{TRAIN}}^{,1.0}.
-]
+\]
 
 **Explanation:**
 The training loop processes the data in minibatches (`batch_size=1000`), so the number of iterations per epoch scales linearly with `N_TRAIN`.
