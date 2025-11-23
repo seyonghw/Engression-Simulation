@@ -53,7 +53,7 @@ for rep in range(REPS):
 with mp.Pool(n_jobs) as pool:
     results = pool.map(run_one_rep, range(REPS))
 rows = [r for group in results for r in group]
-
+```
 
 ## 4. Runtime Improvement
 
